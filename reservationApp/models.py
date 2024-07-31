@@ -51,10 +51,16 @@ class Schedule(models.Model):
 
     def __str__(self):
         return str(self.code + ' - ' + self.bus.bus_number)
-
+    
     def count_available(self):
         booked = Booking.objects.filter(schedule=self).aggregate(Sum('seats'))['seats__sum']
+        if booked is None:
+            booked = 0
         return self.bus.seats - booked
+
+#    def count_available(self):
+#      booked = Booking.objects.filter(schedule=self).aggregate(Sum('seats'))['seats__sum']
+#      return self.bus.seats - booked
 
 class Booking(models.Model):
     code = models.CharField(max_length=100)
